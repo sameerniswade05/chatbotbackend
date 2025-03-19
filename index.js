@@ -32,7 +32,7 @@ app.post("/process", async (req, res) => {
 
     console.log("Generated response:", responseText);
 
-    res.setHeader("Access-Control-Allow-Origin", FRONTEND_ORIGIN); // Ensure response headers allow CORS
+    res.setHeader("Access-Control-Allow-Origin", "https://port5173-workspaces-ws-gfqjd.us10.trial.applicationstudio.cloud.sap/"); // Ensure response headers allow CORS
     res.json({ response: responseText });
   } catch (error) {
     console.error("Error processing request:", error);
