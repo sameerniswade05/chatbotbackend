@@ -17,14 +17,10 @@ let sapData = null;
 // Function to fetch SAP data before starting the server
 const getSapData = async () => {
   sapData = await fetchSapData(); // Fetch data and store it in sapData
+  console.log("Fetched SAP Data:", sapData);
 };
 
 getSapData(); // Call the function to fetch the data before the server starts
-
-// Log the data to ensure it's fetched
-setTimeout(() => {
-  console.log("sapData", sapData);
-}, 1000);
 
 // Initialize Google Generative AI with API key from environment variables
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
@@ -43,9 +39,26 @@ app.post("/process", async (req, res) => {
 
     console.log("Received text:", text);
 
+    // Assuming sapData has candidateData and jobProfileData
+    const { candidateData, jobProfileData } = sapData || {}; // Destructure candidateData and jobProfileData
+
+    // Log the fetched data
+    console.log("Candidate Data:", candidateData);
+    console.log("Job Profile Data:", jobProfileData);
+
+    // Check if the required data exists
+    if (!candidateData || !jobProfileData) {
+      return res.status(400).json({ error: "Missing SAP data" });
+    }
+
     // Here, combine the received text with the sapData
-    // You can structure this however you'd like based on the type of data in sapData
-    const prompt = `Given the following SAP data:\n${JSON.stringify(sapData, null, 2)}\n\nPlease generate a response based on this data and the following query: ${text}`;
+    const prompt = `
+    Given the following SAP data:
+    Candidate Data: ${JSON.stringify(candidateData, null, 2)}
+    Job Profile Data: ${JSON.stringify(jobProfileData, null, 2)}
+    
+    Please generate a response based on this data and the following query: ${text}
+    `;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -61,8 +74,7 @@ app.post("/process", async (req, res) => {
 });
 
 // Start the server on the correct port
-const PORT = process.env.PORT || 3011; // Ensure you are using the correct port
+const PORT = 3012; // Ensure you are using the correct port
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
- 
