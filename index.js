@@ -74,7 +74,7 @@ app.post("/process", async (req, res) => {
 });
 
 // Start the server on the correct port
-const PORT = 3012; // Ensure you are using the correct port
+const PORT = process.env.PORT || 3000; // Ensure you are using the correct port
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
